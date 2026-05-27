@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giulia R — Interview Pitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-card: #111111;
+            --text: #f5f5f5;
+            --text-muted: #888888;
+            --accent: #e8d5b7;
+            --accent-warm: #d4a574;
+            --accent-cool: #7eb8a2;
+            --accent-vibrant: #c9a96e;
+            --border: #222222;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Slide Container */
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 80px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+
+        .slide.prev {
+            transform: translateX(-100px);
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 16px;
+            z-index: 1000;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        .slide-counter {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* Slide Content Styles */
+        .slide-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .slide-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            max-width: 900px;
+        }
+
+        .slide-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--text-muted);
+            font-weight: 300;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .slide-body {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .slide-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1100px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .slide-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide-list li {
+            padding: 16px 0;
+            padding-left: 32px;
+            position: relative;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .slide-list li:last-child {
+            border-bottom: none;
+        }
+
+        .slide-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .highlight-box {
+            background: var(--bg-card);
+            border-left: 3px solid var(--accent);
+            padding: 24px 32px;
+            border-radius: 0 12px 12px 0;
+            margin-top: 32px;
+        }
+
+        .highlight-box p {
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .metric-row {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .brand-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag-warm { background: rgba(212, 165, 116, 0.15); color: var(--accent-warm); }
+        .tag-cool { background: rgba(126, 184, 162, 0.15); color: var(--accent-cool); }
+        .tag-vibrant { background: rgba(201, 169, 110, 0.15); color: var(--accent-vibrant); }
+
+        .case-visual {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .case-visual h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .platform-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .platform-tag i {
+            color: var(--accent);
+        }
+
+        .quote-large {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-style: italic;
+            color: var(--text);
+            line-height: 1.5;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .closing-cta {
+            margin-top: 40px;
+            padding: 20px 40px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .key-point {
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(126, 184, 162, 0.1));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-top: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .key-point i {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 4px;
+        }
+
+        .key-point-text {
+            font-size: 1rem;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .ai-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .ai-box {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .ai-box h5 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .ai-box.ai-role h5 { color: var(--accent-warm); }
+        .ai-box.human-role h5 { color: var(--accent-cool); }
+
+        .ai-box p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ===== IMAGE PLACEHOLDERS ===== */
+        .img-placeholder {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
+        .img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .img-placeholder::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(10,10,10,0.6) 100%);
+            pointer-events: none;
+        }
+
+        .img-hero {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            margin: 0 auto 32px;
+            border: 3px solid var(--accent);
+        }
+
+        .img-hero img {
+            border-radius: 50%;
+        }
+
+        .img-side {
+            width: 100%;
+            height: 380px;
+        }
+
+        .img-full {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            border-radius: 0;
+            border: none;
+        }
+
+        .img-full img {
+            opacity: 0.25;
+            filter: grayscale(30%);
+        }
+
+        .img-full::after {
+            background: linear-gradient(180deg, rgba(10,10,10,0.3) 0%, var(--bg) 100%);
+        }
+
+        .slide-content-overlay {
+            position: relative;
+            z-index: 1;
+        }
+
+        .img-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(10,10,10,0.8);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            z-index: 2;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .img-empty-state {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            gap: 12px;
+        }
+
+        .img-empty-state i {
+            font-size: 2rem;
+            color: var(--border);
+        }
+
+        .img-empty-state span {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Slide 1 specific */
+        .slide-1-layout {
+            text-align: center;
+        }
+
+        /* Slide 2 specific */
+        .slide-2-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            max-width: 1100px;
+            width: 100%;
+            align-items: center;
+        }
+
+        /* Slide 8 specific */
+        .slide-8-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            max-width: 1100px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .metrics-visual {
+            height: 420px;
+        }
+
+        /* Slide 9 specific */
+        .slide-9-layout {
+            text-align: center;
+            position: relative;
+        }
+
+        .closing-visual {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 40px;
+            border: 2px solid var(--accent);
+            overflow: hidden;
+        }
+
+        .closing-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+            .slide { padding: 40px 24px; }
+            .slide-grid { grid-template-columns: 1fr; gap: 30px; }
+            .slide-2-layout { grid-template-columns: 1fr; gap: 30px; }
+            .slide-8-layout { grid-template-columns: 1fr; gap: 30px; }
+            .metric-row { flex-direction: column; gap: 20px; }
+            .ai-split { grid-template-columns: 1fr; }
+            .img-side { height: 280px; }
+            .img-hero { width: 160px; height: 160px; }
+            .metrics-visual { height: 280px; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+
+        <!-- SLIDE 1: OPENING -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-1-layout slide-content-overlay">
+                <div class="img-placeholder img-hero">
+                    <!-- COLOCAR AQUÍ: slide-01-hero.jpg -->
+                    <div class="img-empty-state">
+                        <i class="fas fa-user"></i>
+                        <span>slide-01-hero.jpg</span>
+                    </div>
+                </div>
+                <div class="slide-label">Interview Pitch</div>
+                <h1 class="slide-title">Giulia <span style="color: var(--accent);">R</span></h1>
+                <p class="slide-subtitle">Social Media Strategy & Creative Execution</p>
+                <div class="highlight-box" style="max-width: 700px; margin: 40px auto 0;">
+                    <p>"I build social ecosystems where content strategy, creative execution, and community intelligence feed into each other. I don't just post content — I connect brand storytelling to platform algorithms and business KPIs."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: WHAT I DO -->
+        <div class="slide" data-slide="2">
+            <div class="slide-2-layout slide-content-overlay">
+                <div>
+                    <div class="slide-label">What I Do</div>
+                    <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3.5rem);">From First Impression<br>to Conversion</h2>
+                    <div class="slide-body" style="margin-top: 24px;">
+                        <ul class="slide-list">
+                            <li>Content Strategy & Funnel Design — awareness to conversion</li>
+                            <li>Copywriting & Social SEO — writing for algorithms and humans</li>
+                            <li>Reels / Short-form Video — hook-first, platform-native</li>
+                            <li>Community Management — turning comments into relationships</li>
+                            <li>UGC & Ambassador Programs — customers as creators</li>
+                            <li>AI-Assisted Workflows — accelerate iteration, control strategy</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="img-placeholder img-side">
+                    <!-- COLOCAR AQUÍ: slide-02-services.jpg -->
+                    <div class="img-empty-state">
+                        <i class="fas fa-image"></i>
+                        <span>slide-02-services.jpg</span>
+                    </div>
+                    <div class="img-badge">Workspace</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: ALAYA -->
+        <div class="slide" data-slide="3">
+            <div class="slide-grid slide-content-overlay">
+                <div>
+                    <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3rem);">ALAYA Studio</h2>
+                    <p class="slide-subtitle" style="margin-bottom: 24px;">Wellness Brand Growth — Mexico City</p>
+                    <div style="margin-bottom: 24px;">
+                        <span class="brand-tag tag-warm">Strategy</span>
+                        <span class="brand-tag tag-cool">Content</span>
+                        <span class="brand-tag tag-vibrant">Growth</span>
+                    </div>
+                    <ul class="slide-list">
+                        <li>Built 3-stage funnel: Reels → Carousels → Stories</li>
+                        <li>Launched #AlayaFlow UGC campaign</li>
+                        <li>Cut production costs 30% via client content</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="img-placeholder img-side">
+                        <!-- COLOCAR AQUÍ: slide-03-alaya.jpg -->
+                        <div class="img-empty-state">
+                            <i class="fas fa-spa"></i>
+                            <span>slide-03-alaya.jpg</span>
+                        </div>
+                        <div class="img-badge">Wellness</div>
+                    </div>
+                    <div class="case-visual" style="margin-top: 20px;">
+                        <h4>Platform Mix</h4>
+                        <div style="margin-bottom: 24px;">
+                            <span class="platform-tag"><i class="fab fa-instagram"></i> Instagram Feed</span>
+                            <span class="platform-tag"><i class="fab fa-instagram"></i> Reels</span>
+                            <span class="platform-tag"><i class="fab fa-instagram"></i> Stories</span>
+                        </div>
+                        <h4 style="margin-top: 24px;">Key Metrics</h4>
+                        <div class="metric-row" style="margin-top: 16px;">
+                            <div class="metric-item">
+                                <div class="metric-number">6.2%</div>
+                                <div class="metric-label">Engagement Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-number">18%</div>
+                                <div class="metric-label">DM to Booking</div>
+                            </div>
+                        </div>
+                        <div class="key-point" style="margin-top: 24px;">
+                            <i class="fas fa-lightbulb"></i>
+                            <div class="key-point-text">Wellness audiences need 3+ content types before booking. Most brands stop at one.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: LUCKY STASH -->
+        <div class="slide" data-slide="4">
+            <div class="slide-grid slide-content-overlay">
+                <div>
+                    <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3rem);">Lucky Stash</h2>
+                    <p class="slide-subtitle" style="margin-bottom: 24px;">Premium Botanical Tequila</p>
+                    <div style="margin-bottom: 24px;">
+                        <span class="brand-tag tag-warm">Differentiation</span>
+                        <span class="brand-tag tag-cool">Editorial</span>
+                        <span class="brand-tag tag-vibrant">Luxury</span>
+                    </div>
+                    <ul class="slide-list">
+                        <li>Positioned at heritage × innovation intersection</li>
+                        <li>Curated Instagram as visual archive, not ads</li>
+                        <li>AI-generated 20+ moodboards for direction</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="img-placeholder img-side">
+                        <!-- COLOCAR AQUÍ: slide-04-luckystash.jpg -->
+                        <div class="img-empty-state">
+                            <i class="fas fa-wine-bottle"></i>
+                            <span>slide-04-luckystash.jpg</span>
+                        </div>
+                        <div class="img-badge">Premium</div>
+                    </div>
+                    <div class="case-visual" style="margin-top: 20px;">
+                        <h4>Visual Identity</h4>
+                        <div style="margin-bottom: 24px;">
+                            <span class="platform-tag"><i class="fab fa-instagram"></i> Curated Archive</span>
+                            <span class="platform-tag"><i class="fab fa-tiktok"></i> Behind-the-Scenes</span>
+                        </div>
+                        <h4 style="margin-top: 24px;">AI in Action</h4>
+                        <div class="ai-split" style="margin-top: 16px;">
+                            <div class="ai-box ai-role">
+                                <h5>AI Did</h5>
+                                <p>Generated moodboards, sensory descriptors, color palettes</p>
+                            </div>
+                            <div class="ai-box human-role">
+                                <h5>I Did</h5>
+                                <p>Curated feed, selected final visuals, brand voice</p>
+                            </div>
+                        </div>
+                        <div class="key-point" style="margin-top: 24px;">
+                            <i class="fas fa-arrow-trend-up"></i>
+                            <div class="key-point-text">DMs shifted from "how much" to "where can I buy" — intent quality improved</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: THIRSTDAY -->
+        <div class="slide" data-slide="5">
+            <div class="slide-grid slide-content-overlay">
+                <div>
+                    <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3rem);">Thirstday</h2>
+                    <p class="slide-subtitle" style="margin-bottom: 24px;">Cultural Identity & Emotional Connection</p>
+                    <div style="margin-bottom: 24px;">
+                        <span class="brand-tag tag-warm">Heritage</span>
+                        <span class="brand-tag tag-cool">Nostalgia</span>
+                        <span class="brand-tag tag-vibrant">Millennial</span>
+                    </div>
+                    <ul class="slide-list">
+                        <li>Built strategy around Mexican heritage reinterpretation</li>
+                        <li>Each flavor = distinct personality for storytelling</li>
+                        <li>AI-generated cultural reference libraries</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="img-placeholder img-side">
+                        <!-- COLOCAR AQUÍ: slide-05-thirstday.jpg -->
+                        <div class="img-empty-state">
+                            <i class="fas fa-pepper-hot"></i>
+                            <span>slide-05-thirstday.jpg</span>
+                        </div>
+                        <div class="img-badge">Heritage</div>
+                    </div>
+                    <div class="case-visual" style="margin-top: 20px;">
+                        <h4>Content Pillars</h4>
+                        <div style="margin-bottom: 24px;">
+                            <span class="platform-tag">Sobremesa</span>
+                            <span class="platform-tag">Family Rituals</span>
+                            <span class="platform-tag">Food & Nostalgia</span>
+                            <span class="platform-tag">Bicultural Identity</span>
+                        </div>
+                        <h4 style="margin-top: 24px;">AI in Action</h4>
+                        <div class="ai-split" style="margin-top: 16px;">
+                            <div class="ai-box ai-role">
+                                <h5>AI Did</h5>
+                                <p>Flavor personalities, cultural refs, meme formats</p>
+                            </div>
+                            <div class="ai-box human-role">
+                                <h5>I Did</h5>
+                                <p>Cultural judgment, final curation, voice tone</p>
+                            </div>
+                        </div>
+                        <div class="key-point" style="margin-top: 24px;">
+                            <i class="fas fa-heart"></i>
+                            <div class="key-point-text">Comments shifted to cultural identification: "This reminds me of my abuela's kitchen"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: MASTER IOT -->
+        <div class="slide" data-slide="6">
+            <div class="slide-grid slide-content-overlay">
+                <div>
+                    <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3rem);">Master IoT</h2>
+                    <p class="slide-subtitle" style="margin-bottom: 24px;">B2B Tech Education</p>
+                    <div style="margin-bottom: 24px;">
+                        <span class="brand-tag tag-warm">Thought Leadership</span>
+                        <span class="brand-tag tag-cool">B2B</span>
+                    </div>
+                    <ul class="slide-list">
+                        <li>Translated complex IoT into clarity, not simplicity</li>
+                        <li>Positioned founder as industry voice, not salesperson</li>
+                        <li>LinkedIn-first with Instagram as visual support</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="img-placeholder img-side">
+                        <!-- COLOCAR AQUÍ: slide-06-masteriot.jpg -->
+                        <div class="img-empty-state">
+                            <i class="fas fa-microchip"></i>
+                            <span>slide-06-masteriot.jpg</span>
+                        </div>
+                        <div class="img-badge">B2B Tech</div>
+                    </div>
+                    <div class="case-visual" style="margin-top: 20px;">
+                        <h4>Platform Strategy</h4>
+                        <div style="margin-bottom: 24px;">
+                            <span class="platform-tag"><i class="fab fa-linkedin"></i> Long-form Carousels</span>
+                            <span class="platform-tag"><i class="fab fa-linkedin"></i> Founder POV</span>
+                            <span class="platform-tag"><i class="fab fa-instagram"></i> Infographics</span>
+                        </div>
+                        <h4 style="margin-top: 24px;">Key Metrics</h4>
+                        <div class="metric-row" style="margin-top: 16px;">
+                            <div class="metric-item">
+                                <div class="metric-number">3.5%</div>
+                                <div class="metric-label">Engagement Rate</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-number">+45%</div>
+                                <div class="metric-label">Time on Content</div>
+                            </div>
+                        </div>
+                        <div class="key-point" style="margin-top: 24px;">
+                            <i class="fas fa-lightbulb"></i>
+                            <div class="key-point-text">Content became silent salesperson — prospects arrived educated, calls got shorter</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: AI & WORKFLOW -->
+        <div class="slide" data-slide="7">
+            <div class="slide-content-overlay" style="max-width: 1100px; width: 100%;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+                    <div>
+                        <div class="slide-label">How I Work</div>
+                        <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 40px;">AI Accelerates.<br>I Control Strategy.</h2>
+                        <div class="ai-split" style="margin-top: 0;">
+                            <div class="ai-box ai-role" style="padding: 32px;">
+                                <h5 style="font-size: 0.9rem;"><i class="fas fa-robot" style="margin-right: 8px;"></i>AI Handles</h5>
+                                <ul style="list-style: none; margin-top: 16px;">
+                                    <li style="padding: 8px 0; color: var(--text-muted);">20 angles from 1 brief</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">First-pass copy with keywords</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Resize/reformat for platforms</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Pattern detection in data</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Early trend signals</li>
+                                </ul>
+                            </div>
+                            <div class="ai-box human-role" style="padding: 32px;">
+                                <h5 style="font-size: 0.9rem;"><i class="fas fa-user" style="margin-right: 8px;"></i>I Handle</h5>
+                                <ul style="list-style: none; margin-top: 16px;">
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Brand voice selection</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Tone & cultural nuance</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Final visual judgment</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Strategic decisions</li>
+                                    <li style="padding: 8px 0; color: var(--text-muted);">Community interaction</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="highlight-box" style="margin-top: 32px;">
+                            <p>"AI compresses 4 hours into 45 minutes. Those 3 hours and 15 minutes go into strategy, creative judgment, and community interaction — the things AI can't do."</p>
+                        </div>
+                    </div>
+                    <div class="img-placeholder img-side" style="height: 520px;">
+                        <!-- COLOCAR AQUÍ: slide-07-ai-workflow.jpg -->
+                        <div class="img-empty-state">
+                            <i class="fas fa-brain"></i>
+                            <span>slide-07-ai-workflow.jpg</span>
+                        </div>
+                        <div class="img-badge">AI Workflow</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: PERFORMANCE -->
+        <div class="slide" data-slide="8">
+            <div class="slide-8-layout slide-content-overlay">
+                <div class="img-placeholder metrics-visual">
+                    <!-- COLOCAR AQUÍ: slide-08-metrics.jpg -->
+                    <div class="img-empty-state">
+                        <i class="fas fa-chart-line"></i>
+                        <span>slide-08-metrics.jpg</span>
+                    </div>
+                    <div class="img-badge">Analytics</div>
+                </div>
+                <div>
+                    <div class="slide-label">Data Mindset</div>
+                    <h2 class="slide-title" style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 40px;">Metrics That Matter</h2>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-heart"></i></div>
+                            <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">Engagement Rate</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Content-audience fit</div>
+                        </div>
+                        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-bookmark"></i></div>
+                            <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">Saves</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Purchase intent signal</div>
+                        </div>
+                        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-share"></i></div>
+                            <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">Shares</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Advocacy & reach</div>
+                        </div>
+                        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-mouse-pointer"></i></div>
+                            <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">CTR</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Conversion readiness</div>
+                        </div>
+                        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-comment-dots"></i></div>
+                            <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">DM Quality</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Lead generation</div>
+                        </div>
+                        <div style="background: var(--bg-card); border-radius: 16px; padding: 24px; text-align: center; border: 1px solid var(--border);">
+                            <div style="font-size: 1.5rem; color: var(--accent); margin-bottom: 8px;"><i class="fas fa-video"></i></div>
+                            <div style="font-weight: 600; margin-bottom: 4px; font-size: 0.9rem;">Video Completion</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Hook effectiveness</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: CLOSING -->
+        <div class="slide" data-slide="9">
+            <div class="slide-9-layout slide-content-overlay">
+                <div class="closing-visual img-placeholder">
+                    <!-- COLOCAR AQUÍ: slide-09-closing.jpg -->
+                    <div class="img-empty-state">
+                        <i class="fas fa-user"></i>
+                        <span>slide-09-closing.jpg</span>
+                    </div>
+                </div>
+                <div class="slide-label">Why Me</div>
+                <p class="quote-large">"I operate across the full stack — strategy, creation, execution, and analysis. I don't need a separate designer, copywriter, and strategist. I am the bridge between creative and business."</p>
+                <div style="margin-top: 48px; text-align: center;">
+                    <div style="display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+                        <div style="text-align: center;">
+                            <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--accent);">4+</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Years</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--accent);">4</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Industries</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--accent);">3</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Platforms</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--accent);">∞</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Iterations</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 48px; text-align: center;">
+                    <div class="closing-cta">I'm happy to dive deeper into any of these cases</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+        <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">9</span></div>
+        <button class="nav-btn" onclick="nextSlide()" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const currentSlideEl = document.getElementById('currentSlide');
+        const totalSlidesEl = document.getElementById('totalSlides');
+
+        totalSlidesEl.textContent = totalSlides;
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index + 1 < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            currentSlideEl.textContent = currentSlide;
+            const progress = (currentSlide / totalSlides) * 100;
+            progressBar.style.width = progress + '%';
+
+            document.getElementById('prevBtn').style.opacity = currentSlide === 1 ? '0.3' : '1';
+            document.getElementById('nextBtn').style.opacity = currentSlide === totalSlides ? '0.3' : '1';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        updateSlide();
+    </script>
+
+</body>
+</html>
